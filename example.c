@@ -1,41 +1,52 @@
-#define STRIP
-
-#include "cinq.h"
 #include <stdio.h>
 
-void main(void){
+#define CINQ_STRIP
+
+#include "cinq.h"
+
+int main(void){
 	int *numbers = NULL;
-	for(int i=0; i < 10; i++) { append(numbers,i); }
+	for(int i = 0; i < 10; i++) { append(numbers, i); }
 
 	each(numbers, x, i, {
-   		printf("%zu: %d\n", i, x);
+		printf("%zu: %d\n", i, x);
 	});
 
 	printf("n * 3: \n");
-	each(
-		numbers = select(numbers, y, (y * 3)),
-	z, printf("%d ", z));
+	chain(numbers,
+		select(y, y * 3),
+		each(z, printf("%d ", z))
+	);
 	printf("\n");
 
 	printf("List contains evens? %s\n", any(numbers, x, x % 2 == 0) ? "Yes" : "No");
 	printf("List contains only evens? %s\n", all(numbers, x, x % 2 == 0) ? "Yes" : "No");
+	printf("List contains 7? %s\n", chain(numbers, contains(7)) ? "Yes" : "No");
 
 	printf("evens: \n");
-	each(where(numbers, x, x % 2 == 0), y, printf("%d ", y));
+	chain(numbers,
+		where(x, x % 2 == 0),
+		each(y, printf("%d ", y))
+	);
 	printf("\n");
 
 	printf("first 5:\n");
-	each(take(numbers,5), y, printf("%d ", y));
+	chain(numbers,
+		take(5),
+		each(y, printf("%d ", y))
+	);
 	printf("\n");
 
 	printf("slice 4-6:\n");
-    each(slice(numbers,4,6), y, printf("%d ", y));
-    printf("\n");
+	chain(numbers,
+		slice(4, 6),
+		each(y, printf("%d ", y))
+	);
+	printf("\n");
 
 	printf("a & b:\n");
-	int* a = NULL;
-	int* b = NULL;
-	int* c = NULL;
+	int *a = NULL;
+	int *b = NULL;
 
 	append(a, 1);
 	append(a, 1);
@@ -44,12 +55,29 @@ void main(void){
 	append(b, 2);
 	append(b, 2);
 
-	each(
-		c = union(a,b),
-	y, printf("%d ", y));
+	chain(a,
+		union(b),
+		each(y, printf("%d ", y)));
 	printf("\n");
 
-	each(distinct(c), y, printf("%d ", y));
+	printf("distinct a & b:\n");
+	chain(a,
+		union(b),
+		distinct(),
+		each(y, printf("%d ", y)));
 	printf("\n");
 
+	printf("even numbers * 3, first 3:\n");
+	int *result = chain(numbers,
+		where(x, x % 2 == 0),
+		select(x, x * 3),
+		take(3));
+	each(result, y, printf("%d ", y));
+	printf("\n");
+
+	list_free(result);
+	list_free(numbers);
+	list_free(a);
+	list_free(b);
+	return 0;
 }
