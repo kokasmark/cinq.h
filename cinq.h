@@ -11,11 +11,13 @@ o888     88  888   8888o  88 o888   888o
 
 Single header library to perform Linq (Language-Integrated Query) operations on Dynamic Arrays.
 
-(c) Kokas Mark
+Copyright (c) 2026 Kokas Márk
 
 */
 
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 /* Dynamic Array */
@@ -68,7 +70,7 @@ static inline void *cinq_grow(void *list, size_t elem_size) {
     return new_meta + 2;
 }
 
-#define cinqc_onvert(array, length)									  \
+#define cinq_to_list(array, length)									  \
 	if((array) && (length) > 0){									  \
 		(list) = cinq_new(sizeof(*(array)));						  \
 		cinq__meta(list)[1] = length;					  			  \
@@ -89,7 +91,7 @@ static inline void *cinq_grow(void *list, size_t elem_size) {
 /* ----------------------------------------------------------------- */
 /* Operations */
 
-#define cinq_get_macro(_1,_2,_3,_4,n_ame,...) n_ame
+#define cinq_get_macro(_1,_2,_3,_4,name,...) name
 
 /* Select */
 
@@ -267,8 +269,6 @@ static inline void *cinq_grow(void *list, size_t elem_size) {
 	out_;														      \
 })
 
-/* Except */
-/* Reduce */
 /* Any */
 #define cinq_any_4(list, item_, index_, body) ({                      \
     __auto_type c_ = (list);                                          \
@@ -342,3 +342,27 @@ static inline void *cinq_grow(void *list, size_t elem_size) {
 
 #define cinq_all(...) \
     cinq_get_macro(__VA_ARGS__, cinq_all_4, cinq_all_3)(__VA_ARGS__)
+
+/* Except */
+/* Reduce */
+/* To Arr */
+
+#ifndef CINQ_STRIP
+#define CINQ_STRIP
+
+#define new(...)       cinq_new(__VA_ARGS__)
+#define to_list(...)   cinq_to_list(__VA_ARGS__)
+#define append(...)    cinq_append(__VA_ARGS__)
+
+#define select(...)    cinq_select(__VA_ARGS__)
+#define each(...)      cinq_each(__VA_ARGS__)
+#define take(...)      cinq_take(__VA_ARGS__)
+#define where(...)     cinq_where(__VA_ARGS__)
+#define slice(...)     cinq_slice(__VA_ARGS__)
+#define union(...)     cinq_union(__VA_ARGS__)
+#define contains(...)  cinq_contains(__VA_ARGS__)
+#define distinct(...)  cinq_distinct(__VA_ARGS__)
+#define any(...)       cinq_any(__VA_ARGS__)
+#define all(...)       cinq_all(__VA_ARGS__)
+
+#endif
